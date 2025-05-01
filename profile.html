@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+{% load static %}
+
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{%static 'css/index.css'%}" >
+
+</head>
+<body>
+<div class="container mt-5">
+    <h2>My Borrowed Books</h2>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Book</th>
+                <th>Borrow Date</th>
+                <th>Due Date</th>
+                <th>Return Date</th>
+                <th>Fine</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for borrow in borrows %}
+            <tr>
+                <td>{{ borrow.book.title }}</td>
+                <td>{{ borrow.borrow_date }}</td>
+                <td>{{ borrow.due_date }}</td>
+                <td>{{ borrow.return_date|default:"Not Returned" }}</td>
+                <td>₹{{ borrow.fine }}</td>
+                <td>
+                    {% if not borrow.return_date %}
+                        <a href="{% url 'return_book' borrow.id %}" class="btn btn-danger btn-sm">Return</a>
+                        <a href="{% url 'extend_borrow' borrow.id %}" class="btn btn-warning btn-sm">Extend</a>
+                    {% else %}
+                        Returned
+                    {% endif %}
+                </td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" class="text-center">No Borrowed Books</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+</body>
+</html>
